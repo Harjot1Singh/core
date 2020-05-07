@@ -20,3 +20,18 @@
 .mobile.app .navigator-controls .line-counter {
   display: none;
 }
+
+.navigator .context-menu {
+  background: white;
+  padding: 10px;
+}
+
+.navigator .context-menu {
+  background: white;
+  padding: 5px;
+  z-index: 100;
+}
+
+.navigator .context-menu > div {
+  padding: 5px;
+}

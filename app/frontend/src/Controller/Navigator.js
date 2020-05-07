@@ -11,6 +11,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import {
   faChevronUp,
   faChevronDown,
@@ -56,6 +57,11 @@ const NavigatorLine = ( {
   // Register the reference to the line with the NavigationHotKey HOC
   const registerLine = line => register( id, line, true )
 
+  function handleClick( e, gurmukhi ) {
+    // eslint-disable-next-line no-console
+    console.log( 'i am here new line', gurmukhi[ 0 ].innerHTML )
+  }
+
   return (
     <ListItem
       key={id}
@@ -70,7 +76,22 @@ const NavigatorLine = ( {
         {next && <FontAwesomeIcon icon={faAngleDoubleRight} />}
       </span>
 
-      <span className="gurmukhi text">{stripPauses( gurmukhi )}</span>
+      <ContextMenuTrigger id="some_unique_identifier">
+        <span className="gurmukhi text">{stripPauses( gurmukhi )}</span>
+        {/* <button type="button" className="but-one">English Translation</button>
+        <button type="button" className="but-two">English Translit</button> */}
+      </ContextMenuTrigger>
+      <ContextMenu id="some_unique_identifier" className="context-menu">
+        <MenuItem onClick={handleClick}>
+        Copy
+        </MenuItem>
+        <MenuItem>
+         Get Info
+        </MenuItem>
+        <MenuItem>
+          Share
+        </MenuItem>
+      </ContextMenu>
 
       <span className="timestamp meta">
         {timestamp && (
