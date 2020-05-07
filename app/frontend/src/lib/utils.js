@@ -146,7 +146,12 @@ export const mapPlatformKeys = keyMap => ( isMac
  * @param {*} An Object containing a shabad or bani, which contains lines.
  */
 export const findLineIndex = memoize(
-  ( lines, lineId ) => lines.findIndex( ( { id } ) => id === lineId ),
+  ( lines, lineId ) => {
+    console.time(  lineId ) 
+    const res = lines.findIndex( ( { id } ) => id === lineId )
+    console.timeEnd(  lineId ) 
+    return res
+  },
   {
     primitive: true,
     max: 5,

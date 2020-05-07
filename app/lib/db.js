@@ -71,15 +71,21 @@ export const getBanis = () => Banis.query()
  * @async
  * @returns {Array} A list of all lines with translations and transliterations.
  */
-export const getBaniLines = baniId => Banis
-  .query()
-  .joinEager( 'lines.shabad' )
-  .orderBy( [ 'line_group', 'l.order_id' ] )
-  .where( 'banis.id', baniId )
-  .withTranslations()
-  .withTransliterations()
-  .eagerOptions( { minimize: false, aliases: { lines: 'l' } } )
-  .then( ( [ bani ] ) => bani )
+export const getBaniLines = async baniId => {
+  console.time( 'bani-load' )
+
+  const res = await Banis
+    .query()
+    .joinEager( 'lines.shabad' )
+    .orderBy( [ 'line_group', 'lines.order_id' ] )
+    .where( 'banis.id', baniId )
+    .withTranslations()
+    .withTransliterations()
+    .then( ( [ bani ] ) => bani )
+
+  console.timeEnd( 'bani-load' )
+  return res
+}
 
 /**
  * Gets all the sources, with possible translations per source.

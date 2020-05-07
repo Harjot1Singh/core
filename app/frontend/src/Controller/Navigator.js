@@ -7,7 +7,8 @@ import classNames from 'classnames'
 import { invert } from 'lodash'
 import { GlobalHotKeys } from 'react-hotkeys'
 
-import List from '@material-ui/core/List'
+// import { FixedSizeList as List } from 'react-window'
+// import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -28,6 +29,7 @@ import { ContentContext, HistoryContext } from '../lib/contexts'
 import { useCurrentLines } from '../lib/hooks'
 
 import { withNavigationHotkeys } from '../shared/NavigationHotkeys'
+import List from '../shared/AnimatedDynamicList'
 import NavigatorHotKeys from '../shared/NavigatorHotkeys'
 
 import ToolbarButton from './ToolbarButton'
@@ -51,6 +53,7 @@ const NavigatorLine = ( {
   main,
   next,
   timestamp,
+  style,
 } ) => {
   // Move to the line id on click
   const onClick = () => controller.line( id )
@@ -61,6 +64,7 @@ const NavigatorLine = ( {
   return (
     <ListItem
       key={id}
+      style={style}
       className={classNames( { focused } )}
       onClick={onClick}
       ref={registerLine}
@@ -145,19 +149,31 @@ const Navigator = ( { updateFocus, register, focused } ) => {
 
   return (
     <GlobalHotKeys keyMap={numberKeyMap} handlers={hotKeyHandlers}>
-      <List className="navigator" onKeyDown={e => e.preventDefault()}>
-        {lines.map( line => (
-          <NavigatorLine
-            key={line.id}
-            {...line}
-            focused={line.id === focused}
-            main={mainLineId === line.id}
-            next={nextLineId === line.id}
-            hotkey={LINE_HOTKEYS[ jumpLines[ line.id ] ]}
-            register={register}
-            timestamp={viewedLines[ line.id ]}
-          />
-        ) ) }
+      <List
+        className="navigator"
+        onKeyDown={e => e.preventDefault()}
+        height={243.25}
+        itemCount={lines.length}
+        itemSize={35.19}
+        width="100%"
+        scrollToItem={findLineIndex( lines, focused )}
+      >
+        {( { index, style } ) => {
+          const line = lines[ index ]
+          return (
+            <NavigatorLine
+              style={style}
+              key={line.id}
+              {...line}
+              focused={line.id === focused}
+              main={mainLineId === line.id}
+              next={nextLineId === line.id}
+              hotkey={LINE_HOTKEYS[ jumpLines[ line.id ] ]}
+              register={register}
+              timestamp={viewedLines[ line.id ]}
+            />
+          )
+        }}
       </List>
     </GlobalHotKeys>
   )
